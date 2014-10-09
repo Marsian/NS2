@@ -55,12 +55,23 @@ struct hdr_tcp {
 	int tcp_flags_;         /* TCP flags for FullTcp */
 	int last_rtt_;		/* more recent RTT measurement in ms, */
 				/*   for statistics only */
+    /* mptcp */
+    int mp_capable_;
+    int mp_join_;
+    int mp_addr_;
+    int mp_remove_;
+    int mp_dsn_;
+    int mp_subseq_;
+    int mp_dsnlen_;
+    int mp_ack_;
 
 	static int offset_;	// offset for this header
 	inline static int& offset() { return offset_; }
 	inline static hdr_tcp* access(Packet* p) {
 		return (hdr_tcp*) p->access(offset_);
 	}
+	int ppseq_;
+	int ppid_;
 
 	/* per-field member functions */
 	double& ts() { return (ts_); }
@@ -74,6 +85,18 @@ struct hdr_tcp {
 	int& ackno() { return (ackno_); }  
 	int& flags() { return (tcp_flags_); }
 	int& last_rtt() { return (last_rtt_); }
+	int& ppseq() { return (ppseq_); }
+	int& ppid() { return (ppid_); }
+
+    /* mptcp */
+    int& mp_capable() { return (mp_capable_); }
+    int& mp_join() { return (mp_join_); }
+    int& mp_addr() { return (mp_addr_); }
+    int& mp_remove() { return (mp_remove_); }
+    int& mp_dsn() { return (mp_dsn_); }
+    int& mp_subseq() { return (mp_subseq_); }
+    int& mp_dsnlen() { return (mp_dsnlen_); }
+	int& mp_ack() { return (mp_ack_); }
 };
 
 /* these are used to mark packets as to why we xmitted them */
@@ -552,6 +575,7 @@ class RenoTcpAgent : public virtual TcpAgent {
 	unsigned int dupwnd_;
 };
 
+
 /* TCP New Reno */
 class NewRenoTcpAgent : public virtual RenoTcpAgent {
  public:
@@ -590,6 +614,30 @@ class NewRenoTcpAgent : public virtual RenoTcpAgent {
 				 /* leaving fast recovery (default) */
 				 /* 1 for setting cwnd to min(ssthresh, */
 				 /* amnt. of data in network) when leaving */
+};
+
+/* TCP PP  */
+class PPTcpAgent : public virtual NewRenoTcpAgent {
+ public:
+	PPTcpAgent();
+	virtual void recv(Packet *pkt, Handler*);
+	virtual void partialnewack_helper(Packet* pkt);
+	virtual void dupack_action();
+ protected:
+	virtual void output(int seqno, int reason = 0);
+	virtual void send_much(int force, int reason, int maxburst = 0);
+	int newreno_changes_;	/* 0 for fixing unnecessary fast retransmits */
+	int newreno_changes1_;  /* Newreno_changes1_ set to 0 gives the */
+	void partialnewack(Packet *pkt);
+	int allow_fast_retransmit(int last_cwnd_action_);
+	int acked_, new_ssthresh_;  /* used if newreno_changes_ == 1 */
+	double ack2_, ack3_, basertt_; /* used if newreno_changes_ == 1 */
+	int firstpartial_; 	/* For the first partial ACK. */ 
+	int partial_window_deflation_; /* 0 if set cwnd to ssthresh upon */
+	int exit_recovery_fix_;	 /* 0 for setting cwnd to ssthresh upon */
+	int pptseq_;
+	int ppseq_;
+    int ppid_;
 };
 
 /* TCP vegas (VegasTcpAgent) */

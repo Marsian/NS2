@@ -28,8 +28,12 @@ hostinfo               = unknown
 /bin/universe          = unknown
 
 PATH: /home/mars/Workspace/NS2/bin
-PATH: /bin
+PATH: /home/mars/Worksapce/NS/ns-2.35
+PATH: /home/mars/Workspace/NS2/tk8.5.10/unix
+PATH: /home/mars/Workspace/NS2/tcl8.5.10/unix
+PATH: /home/mars/Workspace/NS2/bin
 PATH: /usr/bin
+PATH: /bin
 
 
 ## ----------- ##
@@ -388,9 +392,9 @@ configure:5402: gcc -o conftest  -pipe   conftest.c  >&5
 conftest.c:46:6: warning: conflicting types for built-in function 'sin' [enabled by default]
  char sin ();
       ^
-/tmp/ccxtoFr3.o: In function `main':
+/tmp/ccNLcm8Q.o: In function `main':
 conftest.c:(.text+0xd): undefined reference to `sin'
-/tmp/ccxtoFr3.o:(.data+0x0): undefined reference to `sin'
+/tmp/ccNLcm8Q.o:(.data+0x0): undefined reference to `sin'
 collect2: error: ld returned 1 exit status
 configure:5408: $? = 1
 configure: failed program was:
@@ -1019,7 +1023,7 @@ configure:10369: $? = 0
 configure:10381: result: yes
 configure:10393: checking for getwd
 configure:10450: gcc -o conftest  -pipe   -Wl,--export-dynamic  conftest.c  >&5
-/tmp/ccEW1n5r.o: In function `main':
+/tmp/ccMYmKri.o: In function `main':
 conftest.c:(.text+0xd): warning: the `getwd' function is dangerous and should not be used.
 configure:10456: $? = 0
 configure:10460: test -z 
@@ -1564,9 +1568,9 @@ configure:15848: $? = 0
 configure:15860: result: yes
 configure:16035: checking for BSDgettimeofday
 configure:16092: gcc -o conftest  -pipe   -Wl,--export-dynamic  conftest.c  >&5
-/tmp/ccdjM2Ex.o: In function `main':
+/tmp/ccT4wikV.o: In function `main':
 conftest.c:(.text+0xd): undefined reference to `BSDgettimeofday'
-/tmp/ccdjM2Ex.o:(.data+0x0): undefined reference to `BSDgettimeofday'
+/tmp/ccT4wikV.o:(.data+0x0): undefined reference to `BSDgettimeofday'
 collect2: error: ld returned 1 exit status
 configure:16098: $? = 1
 configure: failed program was:
