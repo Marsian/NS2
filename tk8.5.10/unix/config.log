@@ -28,8 +28,12 @@ hostinfo               = unknown
 /bin/universe          = unknown
 
 PATH: /home/mars/Workspace/NS2/bin
-PATH: /bin
+PATH: /home/mars/Worksapce/NS/ns-2.35
+PATH: /home/mars/Workspace/NS2/tk8.5.10/unix
+PATH: /home/mars/Workspace/NS2/tcl8.5.10/unix
+PATH: /home/mars/Workspace/NS2/bin
 PATH: /usr/bin
+PATH: /bin
 
 
 ## ----------- ##

@@ -28,8 +28,12 @@ uname -v = #57-Ubuntu SMP Tue Jul 15 03:51:08 UTC 2014
 /bin/universe          = unknown
 
 PATH: /home/mars/Workspace/NS2/bin
-PATH: /bin
+PATH: /home/mars/Worksapce/NS/ns-2.35
+PATH: /home/mars/Workspace/NS2/tk8.5.10/unix
+PATH: /home/mars/Workspace/NS2/tcl8.5.10/unix
+PATH: /home/mars/Workspace/NS2/bin
 PATH: /usr/bin
+PATH: /bin
 
 
 ## ----------- ##
@@ -1116,6 +1120,7 @@ on ubuntu
 
 config.status:884: creating Makefile
 config.status:884: creating autoconf.h
+config.status:1059: autoconf.h is unchanged
 
 ## ---------------- ##
 ## Cache variables. ##

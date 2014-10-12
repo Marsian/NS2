@@ -612,12 +612,33 @@ CMUTrace::format_tcp(Packet *p, int offset)
 		ch->opt_num_forwards());
 
 	} else {
-	    sprintf(pt_->buffer() + offset,
-		"[%d %d] %d %d",
-		th->seqno_,
-		th->ackno_,
-		ch->num_forwards(),
-		ch->opt_num_forwards());
+	    if (!show_tcphdr_ == 2) {
+	    	sprintf(pt_->buffer() + offset,
+			"[%d %d] %d %d",
+			th->seqno_,
+			th->ackno_,
+			ch->num_forwards(),
+			ch->opt_num_forwards());
+		} else {
+        	char mptcp_str[256];
+	        memset(mptcp_str, 0, sizeof(mptcp_str));
+   	    	strcpy(mptcp_str, "-");
+	        if (th->mp_capable()) mptcp_str[0] = 'M';
+   	    	if (th->mp_join()) mptcp_str[0] = 'J';
+	        if (th->mp_addr()) mptcp_str[0] = 'a';
+   		    if (th->mp_dsn()) {
+            	sprintf(mptcp_str,"D %d %d %d", th->mp_dsn(), 
+                           th->mp_subseq(), th->mp_dsnlen()); 
+        	} else
+           		if (th->mp_ack()) sprintf(mptcp_str,"A %d", th->mp_ack()); 
+	    	sprintf(pt_->buffer() + offset,
+			"[%d %d] %d %d [%s]",
+			th->seqno_,
+			th->ackno_,
+			ch->num_forwards(),
+			ch->opt_num_forwards(), mptcp_str);
+
+		}
 	}
 }
 

@@ -28,8 +28,12 @@ uname -v = #57-Ubuntu SMP Tue Jul 15 03:51:08 UTC 2014
 /bin/universe          = unknown
 
 PATH: /home/mars/Workspace/NS2/bin
-PATH: /bin
+PATH: /home/mars/Worksapce/NS/ns-2.35
+PATH: /home/mars/Workspace/NS2/tk8.5.10/unix
+PATH: /home/mars/Workspace/NS2/tcl8.5.10/unix
+PATH: /home/mars/Workspace/NS2/bin
 PATH: /usr/bin
+PATH: /bin
 
 
 ## ----------- ##
@@ -796,7 +800,7 @@ configure:7959: $? = 0
 configure:7959: result: yes
 configure:7959: checking for fesetprecision
 configure:7959: gcc -o conftest -g -O2   conftest.c -lm  >&5
-/tmp/cc60d0tQ.o: In function `main':
+/tmp/ccyfiPVn.o: In function `main':
 /home/mars/Workspace/NS2/ns-2.35/conftest.c:83: undefined reference to `fesetprecision'
 collect2: error: ld returned 1 exit status
 configure:7959: $? = 1
@@ -1885,7 +1889,7 @@ configure:8897: $? = 0
 configure:8901: result: found
 configure:8915: checking for addr2ascii
 configure:8915: gcc -o conftest -g -O2   -Wl,-export-dynamic conftest.c -lm  >&5
-/tmp/ccKqnHhB.o: In function `main':
+/tmp/ccI8R6An.o: In function `main':
 /home/mars/Workspace/NS2/ns-2.35/conftest.c:94: undefined reference to `addr2ascii'
 collect2: error: ld returned 1 exit status
 configure:8915: $? = 1
@@ -2114,6 +2118,7 @@ config.status:926: creating indep-utils/webtrace-conv/nlanr/Makefile
 config.status:926: creating indep-utils/webtrace-conv/epa/Makefile
 config.status:926: creating indep-utils/cmu-scen-gen/setdest/Makefile
 config.status:926: creating autoconf.h
+config.status:1101: autoconf.h is unchanged
 
 ## ---------------- ##
 ## Cache variables. ##

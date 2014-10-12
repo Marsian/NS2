@@ -376,6 +376,7 @@ void Trace::format(int tt, int s, int d, Packet* p)
 			seqno,
 			th->uid() /* was p->uid_ */);
 	} else {
+	   if (!show_tcphdr_ == 1) {
 		sprintf(pt_->buffer(), 
 			"%c "TIME_FORMAT" %d %d %s %d %s %d %s.%s %s.%s %d %d %d 0x%x %d %d",
 			tt,
@@ -400,6 +401,45 @@ void Trace::format(int tt, int s, int d, Packet* p)
 			tcph->flags(),
 			tcph->hlen(),
 			tcph->sa_length());
+      } else {
+        char mptcp_str[256];
+        memset(mptcp_str, 0, sizeof(mptcp_str));
+        strcpy(mptcp_str, "-");
+        if (tcph->mp_capable()) mptcp_str[0] = 'M';
+        if (tcph->mp_join()) mptcp_str[0] = 'J';
+        if (tcph->mp_addr()) mptcp_str[0] = 'a';
+        if (tcph->mp_dsn()) {
+            sprintf(mptcp_str,"D %d %d %d", tcph->mp_dsn(), 
+                           tcph->mp_subseq(), tcph->mp_dsnlen()); 
+        } else
+           if (tcph->mp_ack()) sprintf(mptcp_str,"A %d", tcph->mp_ack()); 
+       
+		sprintf(pt_->buffer(), 
+			"%c "TIME_FORMAT" %d %d %s %d %s %d %s.%s %s.%s %d %d %d 0x%x %d %d %s",
+			tt,
+			pt_->round(Scheduler::instance().clock()),
+			s,
+			d,
+			name,
+			th->size(),
+			flags,
+			iph->flowid(), /* was p->class_ */
+		        // iph->src() >> (Address::instance().NodeShift_[1]), 
+			// iph->src() & (Address::instance().PortMask_), 
+  		        // iph->dst() >> (Address::instance().NodeShift_[1]), 
+  		        // iph->dst() & (Address::instance().PortMask_),
+			src_nodeaddr,
+			src_portaddr,
+			dst_nodeaddr,
+			dst_portaddr,
+			seqno,
+			th->uid(), /* was p->uid_ */
+			tcph->ackno(),
+			tcph->flags(),
+			tcph->hlen(),
+			tcph->sa_length(),
+            mptcp_str);
+      } 
 	}
 	if (pt_->namchannel() != 0)
 		sprintf(pt_->nbuffer(), 
