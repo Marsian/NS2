@@ -38,7 +38,7 @@ CPP	= g++
 LINK	= $(CPP)
 LINK_SHLIB = gcc -shared
 MKDEP	= ./conf/mkdep
-TCLSH	= /home/mars/Workspace/NS2/bin/tclsh8.5
+TCLSH	= /home/pengyuan/NS2/bin/tclsh8.5
 TCL2C	= ../tclcl-1.20/tcl2c++
 AR	= ar rc $(BLANK)
 
@@ -64,7 +64,7 @@ DEFINE	= -DTCP_DELAY_BIND_ALL -DNO_TK -DTCLCL_CLASSINSTVAR  -DNDEBUG -DLINUX_TCP
 INCLUDES = \
 	-I.  \
 	-I. \
-	-I/home/mars/Workspace/NS2/tclcl-1.20 -I/home/mars/Workspace/NS2/otcl-1.14 -I/home/mars/Workspace/NS2/include -I/home/mars/Workspace/NS2/include -I/home/mars/Workspace/NS2/include -I/usr/include/pcap \
+	-I/home/pengyuan/NS2/tclcl-1.20 -I/home/pengyuan/NS2/otcl-1.14 -I/home/pengyuan/NS2/include -I/home/pengyuan/NS2/include -I/home/pengyuan/NS2/include -I/usr/include/pcap \
 	-I./tcp -I./sctp -I./common -I./link -I./queue \
 	-I./adc -I./apps -I./mac -I./mobile -I./trace \
 	-I./routing -I./tools -I./classifier -I./mcast \
@@ -76,7 +76,7 @@ INCLUDES = \
 
 
 LIB	= \
-	-L/home/mars/Workspace/NS2/tclcl-1.20 -ltclcl -L/home/mars/Workspace/NS2/otcl-1.14 -lotcl -L/home/mars/Workspace/NS2/lib -ltk8.5 -L/home/mars/Workspace/NS2/lib -ltcl8.5 \
+	-L/home/pengyuan/NS2/tclcl-1.20 -ltclcl -L/home/pengyuan/NS2/otcl-1.14 -lotcl -L/home/pengyuan/NS2/lib -ltk8.5 -L/home/pengyuan/NS2/lib -ltcl8.5 \
 	-lXext -lX11 \
 	 -lnsl -ldl \
 	-lm -lm 

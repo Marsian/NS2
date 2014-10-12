@@ -38,7 +38,7 @@ INST_OINC=	/usr/local/include
 
 INCLUDES = \
 	-I. \
-	-I/home/mars/Workspace/NS2/include -I/home/mars/Workspace/NS2/include -I/home/mars/Workspace/NS2/include \
+	-I/home/pengyuan/NS2/include -I/home/pengyuan/NS2/include -I/home/pengyuan/NS2/include \
 	 \
 	-I${prefix}/include \
 	
@@ -46,7 +46,7 @@ INCLUDES = \
 DEFINES = \
 	 -DNDEBUG -DUSE_SHM -DHAVE_UNISTD_H=1
 
-LIB =	-L/home/mars/Workspace/NS2/lib -ltk8.5 -L/home/mars/Workspace/NS2/lib -ltcl8.5 \
+LIB =	-L/home/pengyuan/NS2/lib -ltk8.5 -L/home/pengyuan/NS2/lib -ltcl8.5 \
 	-lXext -lX11  -lnsl -ldl -lm
 
 OTCLLIB= -L. -lotcl

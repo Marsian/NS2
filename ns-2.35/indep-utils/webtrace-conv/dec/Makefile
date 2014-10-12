@@ -52,10 +52,10 @@ prefix  = /usr/local
 BINDEST = /usr/local/bin
 
 CC = g++
-INCLUDE = -I. -I/home/mars/Workspace/NS2/tclcl-1.20 -I/home/mars/Workspace/NS2/otcl-1.14 -I/home/mars/Workspace/NS2/include -I/home/mars/Workspace/NS2/include -I/home/mars/Workspace/NS2/include -I/usr/include/pcap
+INCLUDE = -I. -I/home/pengyuan/NS2/tclcl-1.20 -I/home/pengyuan/NS2/otcl-1.14 -I/home/pengyuan/NS2/include -I/home/pengyuan/NS2/include -I/home/pengyuan/NS2/include -I/usr/include/pcap
 CFLAGS = -O2 -Wall -Wno-write-strings -DCPP_NAMESPACE=std
 LDFLAGS = 
-LIBS = -L/home/mars/Workspace/NS2/lib -ltcl8.5  -lnsl -ldl -lm 
+LIBS = -L/home/pengyuan/NS2/lib -ltcl8.5  -lnsl -ldl -lm 
 INSTALL = /usr/bin/install -c
 
 SRC = proxytrace.cc formsquid.cc formtxt.cc my-endian.cc \
