@@ -130,6 +130,8 @@ void SatRouteAgent::forwardPacket(Packet * p)
 	NsObject *link_entry_;
 
 	hdrc->direction() = hdr_cmn::DOWN; // send it down the stack
+	//something dpy added
+	printf("Check IP header, %d\n", iph->daddr());
 	int dst = Address::instance().get_nodeaddr(iph->daddr());
 	// Here we need to have an accurate encoding of the next hop routing
 	// information
