@@ -83,6 +83,11 @@ void TermHandoffTimer::expire(Event*)
         a_->handoff();  
 }                               
 
+void TermSleepTimer::expire(Event*)
+{                           
+        a_->afterHandoff();
+}                               
+
 //////////////////////////////////////////////////////////////////////////////
 // class LinkHandoffMgr
 //////////////////////////////////////////////////////////////////////////////
@@ -189,7 +194,7 @@ SatNode* LinkHandoffMgr::get_peer(SatLinkHead* slhp)
 double TermLinkHandoffMgr::elevation_mask_ = 0;
 int TermLinkHandoffMgr::term_handoff_int_ = 10;
 
-TermLinkHandoffMgr::TermLinkHandoffMgr() : timer_(this)
+TermLinkHandoffMgr::TermLinkHandoffMgr() : timer_(this),sleepTimer_(this) 
 {
 	bind("elevation_mask_", &elevation_mask_);
 	bind("term_handoff_int_", &term_handoff_int_);
@@ -298,8 +303,11 @@ int TermLinkHandoffMgr::handoff()
 				}
 			}
 			if (found_elev_) {
-				slhp->linkup_ = TRUE;
+				//slhp->linkup_ = TRUE;
 				link_changes_flag_ = TRUE;
+            slhpStack.push_back( slhp );
+            peerStack.push_back( peer_ );
+            /*
 				// Point slhp->phy_tx to peer_'s inlink
 				slhp->phy_tx()->setchnl(peer_->uplink());
 				// Point slhp->phy_rx to peer_'s outlink and
@@ -307,11 +315,14 @@ int TermLinkHandoffMgr::handoff()
 				slhp->phy_rx()->setchnl(peer_->downlink());
 				// Add phy to channel's linked list of i/fces
 				slhp->phy_rx()->insertchnl(&(peer_->downlink()->ifhead_));
+            */
 			}
 		}
 	}
 	if (link_changes_flag_) { 
-		SatRouteObject::instance().recompute();
+		//SatRouteObject::instance().recompute();
+      printf( "BeginHandoff %f\n", Scheduler::instance().clock() );
+      sleepTimer_.resched( 0.5 );
 	}
 	if (restart_timer_flag_) {
 		// If we don't have polar GSLs, don't reset the timer
@@ -323,6 +334,28 @@ int TermLinkHandoffMgr::handoff()
 			timer_.resched(term_handoff_int_);
 	}
         return link_changes_flag_;
+}
+
+void TermLinkHandoffMgr::afterHandoff()
+{
+      printf( "AfterHandoff %f\n", Scheduler::instance().clock() );
+      if ( slhpStack.empty() )
+         return;
+      for( size_t i = 0; i < slhpStack.size(); i++ ) {
+         SatLinkHead * slhp = slhpStack.back();
+         slhpStack.pop_back();
+         SatNode * peer_ = peerStack.back();
+         peerStack.pop_back();
+			slhp->linkup_ = TRUE;
+			// Point slhp->phy_tx to peer_'s inlink
+			slhp->phy_tx()->setchnl(peer_->uplink());
+			// Point slhp->phy_rx to peer_'s outlink and
+			// add phy_rx to the channels list of phy's
+			slhp->phy_rx()->setchnl(peer_->downlink());
+			// Add phy to channel's linked list of i/fces
+			slhp->phy_rx()->insertchnl(&(peer_->downlink()->ifhead_));
+      }
+		SatRouteObject::instance().recompute();
 }
 
 //////////////////////////////////////////////////////////////////////////
