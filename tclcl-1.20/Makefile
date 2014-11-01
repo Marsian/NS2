@@ -41,7 +41,7 @@ CC	= gcc
 CPP	= g++
 LINK	= $(CPP)
 MKDEP	= ./conf/mkdep
-TCLSH	= /home/mars/Workspace/NS2/bin/tclsh8.5
+TCLSH	= /home/pengyuan/NS2/bin/tclsh8.5
 TCL2C	= ./tcl2c++
 AR	= ar rc $(BLANK)
 
@@ -61,10 +61,10 @@ LDOUT	= -o $(BLANK)
 DEFINE	= -DNO_TK  -DNDEBUG -DUSE_SHM -DHAVE_UNISTD_H=1 -DHAVE_LIBOTCL1_14 -DHAVE_OTCL_H -DHAVE_LIBTK8_5 -DHAVE_TK_H -DHAVE_LIBTCL8_5 -DHAVE_TCLINT_H -DHAVE_TCL_H  -DHAVE_CONFIG_H
 
 INCLUDES = \
-	-I. -I/home/mars/Workspace/NS2/otcl-1.14 -I/home/mars/Workspace/NS2/include -I/home/mars/Workspace/NS2/include -I/home/mars/Workspace/NS2/include
+	-I. -I/home/pengyuan/NS2/otcl-1.14 -I/home/pengyuan/NS2/include -I/home/pengyuan/NS2/include -I/home/pengyuan/NS2/include
 
 LIB	= \
-	-L/home/mars/Workspace/NS2/otcl-1.14 -lotcl -L/home/mars/Workspace/NS2/lib -ltk8.5 -L/home/mars/Workspace/NS2/lib -ltcl8.5
+	-L/home/pengyuan/NS2/otcl-1.14 -lotcl -L/home/pengyuan/NS2/lib -ltk8.5 -L/home/pengyuan/NS2/lib -ltcl8.5
 
 CFLAGS	= $(CCOPT) $(DEFINE)
 

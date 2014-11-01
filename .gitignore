@@ -30,3 +30,6 @@
 # Log files
 *.log
 *tags
+
+# tcl test
+ns-2.35/tcl/test/*

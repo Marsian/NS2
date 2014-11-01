@@ -43,6 +43,7 @@
 #include "rng.h"
 #include "node.h"
 #include <math.h>
+#include <vector>
 
 // Handoff manager types
 #define LINKHANDOFFMGR_SAT 1
@@ -55,6 +56,14 @@ class SatLinkHandoffMgr;
 class TermHandoffTimer : public TimerHandler {
 public:
         TermHandoffTimer(TermLinkHandoffMgr *a) : TimerHandler() {a_ = a; }
+protected:
+        virtual void expire(Event *e);
+        TermLinkHandoffMgr *a_;
+};
+
+class TermSleepTimer : public TimerHandler {
+public:
+        TermSleepTimer(TermLinkHandoffMgr *a) : TimerHandler() {a_ = a; }
 protected:
         virtual void expire(Event *e);
         TermLinkHandoffMgr *a_;
@@ -105,8 +114,12 @@ class TermLinkHandoffMgr : public LinkHandoffMgr {
 public:
 	TermLinkHandoffMgr();
 	int handoff();
+   void afterHandoff();
 protected:
 	TermHandoffTimer timer_;
+   TermSleepTimer sleepTimer_;
+   vector< SatLinkHead * > slhpStack;
+   vector< SatNode * > peerStack;
 	static double elevation_mask_;
 	static int term_handoff_int_;
 };

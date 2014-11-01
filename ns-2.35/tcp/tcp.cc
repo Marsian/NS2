@@ -651,6 +651,11 @@ void TcpAgent::output(int seqno, int reason)
 	hdr_tcp *tcph = hdr_tcp::access(p);
 	hdr_flags* hf = hdr_flags::access(p);
 	hdr_ip *iph = hdr_ip::access(p);
+
+	//something dpy added
+	printf("check ip header: ip dst is, %d\n", iph->daddr());
+
+
 	int databytes = hdr_cmn::access(p)->size();
 	tcph->seqno() = seqno;
 	tcph->ts() = Scheduler::instance().clock();

@@ -840,6 +840,10 @@ FullTcpAgent::sendpacket(int seqno, int ackno, int pflags, int datalen, int reas
         hdr_tcp *tcph = hdr_tcp::access(p);
 	hdr_flags *fh = hdr_flags::access(p);
 
+	//something dpy added
+	hdr_ip *iph = hdr_ip::access(p);
+	printf("check ip header: ip dst %d\n", iph->daddr());
+
 	/* build basic header w/options */
 
         tcph->seqno() = seqno;
