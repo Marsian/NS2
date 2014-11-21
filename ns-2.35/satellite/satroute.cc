@@ -393,7 +393,7 @@ void SatRouteObject::populate_routing_tables(int node)
 		Tcl::instance().evalf("[Simulator instance] populate-flat-classifiers [Node set nn_]");
 		return;
 	}
-        for (; snodep; snodep = (SatNode*) snodep->nextnode()) {
+    for (; snodep; snodep = (SatNode*) snodep->nextnode()) {
 		if (!SatNode::IsASatNode(snodep->address()))
 			continue;   
 		// First, clear slots of the current routing table
@@ -482,6 +482,7 @@ void SatRouteObject::node_compute_routes(int node)
                         if (hopcnt[v] != SAT_ROUTE_INFINITY) {
                                 ROUTE(k, v) = v;
                                 ROUTE_ENTRY(k, v) = ADJ_ENTRY(k, v);
+                                printf("%f\n",ADJ_ENTRY(k,v));
                         }
                 }
         }
