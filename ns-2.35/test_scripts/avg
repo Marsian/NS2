@@ -1,0 +1,44 @@
+#! /usr/bin/perl
+
+$file = $ARGV[0];
+$path1 = $ARGV[1];
+$path2 = $ARGV[2];
+
+open (DATA,"<$file") or die "Cannot open $file:$!";
+
+@sum=qw /0 0 0/;
+@sumtmp=qw /0 0 0/;
+@i = qw /0 0 0/;
+@itmp = qw /1 1 1/;
+@max = qw/0 0 0/, @min = qw /2 2 2/;
+
+while (<DATA>){
+	@x = split /\s+/;
+	$n = 0 if ($x[0] eq "before");
+	$n = 1 if ($x[0] eq 'middle');
+	$n = 2 if ($x[0] eq 'after');
+	$sum[$n]+=$x[3];
+	$i[$n]+=$x[2];
+
+	if ($x[1] eq $path1){
+		$sumtmp[$n] = $x[3];
+		$itmp[$n] = $x[2];
+	}
+	else{
+		$sumtmp[$n] += $x[3];
+		$itmp[$n] += $x[2];
+		$delay[$n] = $sumtmp[$n]/$itmp[$n];
+		$max[$n]=$delay[$n] if($delay[$n]>$max[$n]);
+		$min[$n]=$delay[$n] if($delay[$n]<$min[$n]);
+	}
+	
+}
+
+foreach (0..2){
+	$sum[$_]=$sum[$_]/$i[$_];
+}
+print STDOUT "before:$sum[0] $max[0] $min[0]\nmiddle:$sum[1] $max[1] $min[1]\nafter:$sum[2] $max[2] $min[2]\n";
+
+close DATA;		
+
+exit(0);
