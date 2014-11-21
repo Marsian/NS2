@@ -1,6 +1,0 @@
-set term png
-set out "mptcptotal.png"
-set xrange[0:150]
-set yrange[0:1]
-plot "mptcpsum100.throughput" w li title "mptcp"
-
