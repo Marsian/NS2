@@ -42,6 +42,7 @@
 #include <agent.h>
 #include "route.h"
 #include "node.h"
+#include <vector>
 
 #define ROUTER_PORT      0xff
 #define SAT_ROUTE_INFINITY 0x3fff
@@ -97,7 +98,7 @@ public:
 	return (*instance_);            // general access to route object
   }
   void recompute();
-  void recompute_node(int node);
+  void recompute_node(int node,int dst);
   int command(int argc, const char * const * argv);        
   int data_driven_computation() { return data_driven_computation_; } 
   void insert_link(int src, int dst, double cost);
@@ -110,7 +111,7 @@ protected:
   void populate_routing_tables(int node = -1);
   int lookup(int src, int dst);
   void* lookup_entry(int src, int dst);
-  void node_compute_routes(int node);
+  void node_compute_routes(int node, int dst);
   void dump(); // for debugging only
 
   static SatRouteObject*  instance_;
@@ -118,6 +119,8 @@ protected:
   int suppress_initial_computation_;
   int data_driven_computation_;
   int wiredRouting_;
+    vector<int> route1;
+    vector<int> route2;
 };
 
 #endif

@@ -138,9 +138,10 @@ void SatRouteAgent::forwardPacket(Packet * p)
 		Packet::free(p);
 	}
 	hdrc->addr_type_ = NS_AF_INET;
-	hdrc->last_hop_ = myaddr_; // for tracing purposes 
+	hdrc->last_hop_ = myaddr_; // for tracing purposes
+    //printf("myaddr:%d\n",myaddr_);
 	if (SatRouteObject::instance().data_driven_computation())
-		SatRouteObject::instance().recompute_node(myaddr_);
+		SatRouteObject::instance().recompute_node(myaddr_,dst);
 	if (SatNode::dist_routing_ == 0) {
 		if (slot_ == 0) { // No routes to anywhere
 			if (node_->trace())
@@ -268,10 +269,10 @@ void SatRouteObject::insert_link(int src, int dst, double cost, void* entry)
 		insert(src, dst, cost, entry); // base class insert()
 }
 
-void SatRouteObject::recompute_node(int node)
+void SatRouteObject::recompute_node(int node,int dst)
 {
 	compute_topology();
-	node_compute_routes(node);
+	node_compute_routes(node,dst);
 	populate_routing_tables(node);
 }
 void SatRouteObject::recompute()
@@ -436,7 +437,7 @@ void SatRouteObject::populate_routing_tables(int node)
 int SatRouteObject::lookup(int s, int d)
 {
 	//if (s==0 && d==70) return 11;
-	if (s == 45 && d == 71) return 44;
+	/*if (s == 45 && d == 71) return 44;
 	if (s == 44 && d == 71) return 33;
 	if (s == 33 && d == 71) return 22;
 	if (s == 22 && d == 71) return 11;
@@ -455,7 +456,7 @@ int SatRouteObject::lookup(int s, int d)
 	if (s == 1 && d == 68) return 12;
 	if (s == 12 && d == 68) return 23;
 	if (s == 23 && d == 68) return 34;
-	if (s == 34 && d == 68) return 45;
+	if (s == 34 && d == 68) return 45;*/
 	int src = s + 1;
 	int dst = d + 1;
 	if (src >= size_ || dst >= size_) {
@@ -467,7 +468,7 @@ int SatRouteObject::lookup(int s, int d)
 void* SatRouteObject::lookup_entry(int s, int d)
 {
 	//if (s==0 && d==1) return (route_[INDEX(1, 12, size_)].entry);
-	if (s == 45 && d == 71) return (route_[INDEX(46, 45, size_)].entry);
+	/*if (s == 45 && d == 71) return (route_[INDEX(46, 45, size_)].entry);
 	if (s == 44 && d == 71) return (route_[INDEX(45, 34, size_)].entry);
 	if (s == 33 && d == 71) return (route_[INDEX(34, 23, size_)].entry);
 	if (s == 22 && d == 71) return (route_[INDEX(23, 12, size_)].entry);
@@ -486,7 +487,7 @@ void* SatRouteObject::lookup_entry(int s, int d)
 	if (s == 1 && d == 68) return (route_[INDEX(2, 13, size_)].entry);
 	if (s == 12 && d == 68) return (route_[INDEX(13, 24, size_)].entry);
 	if (s == 23 && d == 68) return (route_[INDEX(24, 35, size_)].entry); 
-	if (s == 34 && d == 68) return (route_[INDEX(35, 46, size_)].entry);
+	if (s == 34 && d == 68) return (route_[INDEX(35, 46, size_)].entry);*/
 	int src = s + 1;
 	int dst = d + 1;
 	if (src >= size_ || dst >= size_) {
@@ -508,7 +509,7 @@ void SatRouteObject::dump()
 	}
 }
 
-void SatRouteObject::node_compute_routes(int node)
+void SatRouteObject::node_compute_routes(int node,int dst)
 {
 	int n = size_;
 	int* parent = new int[n];
@@ -517,9 +518,12 @@ void SatRouteObject::node_compute_routes(int node)
 #define ADJ_ENTRY(i, j) adj_[INDEX(i, j, size_)].entry
 #define ROUTE(i, j) route_[INDEX(i, j, size_)].next_hop
 #define ROUTE_ENTRY(i, j) route_[INDEX(i, j, size_)].entry
+    
+    //printf("original src->dst: %d\n", ROUTE(node+1,dst+1));
 	delete[] route_;
 	route_ = new route_entry[n * n];
 	memset((char *)route_, 0, n * n * sizeof(route_[0]));
+    
 	/* compute routes only for node "node" */
 	int k = node + 1; // must add one to get the right offset in tables  
 	int v;
@@ -536,6 +540,11 @@ void SatRouteObject::node_compute_routes(int node)
 			}
 		}
 	}
+    
+    
+    int find_same_node=0;
+    int find_any_route=0;
+    //printf("-----------\n");
 	for (v = 1; v < n; ++v) {
 		/*
 		* w is the node that is the nearest to the subtree
@@ -546,25 +555,127 @@ void SatRouteObject::node_compute_routes(int node)
 		hopcnt[0] = SAT_ROUTE_INFINITY;
 		int w;
 		for (w = 1; w < n; w++)
-			if (parent[w] != k && hopcnt[w] < hopcnt[o])
+			if (parent[w] != k && hopcnt[w] < hopcnt[o]) //node with the least hop counts to k(node+1);
 				o = w;
-		parent[o] = k;
+		parent[o] = k;   //parent[w]=k; k->w; w is the node with the least hop counts to k
+        //printf("o=%d\n",o);
 		/*
 		* update distance counts for the nodes that are
 		* adjacent to o
 		*/
-		if (o == 0)
+		if (o == 0)  //all nodes are inreachable!!
 			continue;
 		for (w = 1; w < n; w++) {
-			if (parent[w] != k &&
+			if (parent[w] != k &&  //no k to k
 				hopcnt[o] + ADJ(o, w) < hopcnt[w]) {
-				ROUTE(k, w) = ROUTE(k, o);
-				ROUTE_ENTRY(k, w) =
-					ROUTE_ENTRY(k, o);
-				hopcnt[w] = hopcnt[o] + ADJ(o, w);
+                //printf("%d\n",ADJ(o,w));
+                if(dst==70 || dst==68){
+                    find_same_node=0;
+                    for (int i=0; i<route2.size(); ++i) {
+                        if (route2[i]+1==ROUTE(k, o)) {
+                            find_same_node=1;
+                            break;
+                        }
+                    }
+                    if(find_same_node==1) continue;
+                    else{
+                        if(w==dst+1) find_any_route=1;
+                        ROUTE(k, w) = ROUTE(k, o);
+                        ROUTE_ENTRY(k, w) = ROUTE_ENTRY(k, o);
+                        hopcnt[w] = hopcnt[o] + ADJ(o, w);
+                    }
+                
+                }
+                else if(dst==71 || dst==69){
+                    find_same_node=0;
+                    for (int i=0; i<route1.size(); ++i) {
+                        if (route1[i]+1==ROUTE(k, o)) {
+                            find_same_node=1;
+                            break;
+                        }
+                    }
+                    if(find_same_node==1) continue;
+                    else{
+                        if(w==dst+1) find_any_route=1;
+                        ROUTE(k, w) = ROUTE(k, o);
+                        ROUTE_ENTRY(k, w) = ROUTE_ENTRY(k, o);
+                        hopcnt[w] = hopcnt[o] + ADJ(o, w);
+                    }
+                    
+                }else{
+                    ROUTE(k, w) = ROUTE(k, o);
+                    ROUTE_ENTRY(k, w) = ROUTE_ENTRY(k, o);
+                    hopcnt[w] = hopcnt[o] + ADJ(o, w);
+                }
 			}
 		}
 	}
+    if(find_any_route==0){
+        //printf("*find no routes*\n");
+        for (v = 0; v < n; v++)
+            parent[v] = v;
+        
+        /* set the route for all neighbours first */
+        for (v = 1; v < n; ++v) {
+            if (parent[v] != k) {
+                hopcnt[v] = ADJ(k, v);
+                if (hopcnt[v] != SAT_ROUTE_INFINITY) {
+                    ROUTE(k, v) = v;
+                    ROUTE_ENTRY(k, v) = ADJ_ENTRY(k, v);
+                }
+            }
+        }
+        for (v = 1; v < n; ++v) {
+            /*
+             * w is the node that is the nearest to the subtree
+             * that has been routed
+             */
+            int o = 0;
+            /* XXX */
+            hopcnt[0] = SAT_ROUTE_INFINITY;
+            int w;
+            for (w = 1; w < n; w++)
+                if (parent[w] != k && hopcnt[w] < hopcnt[o]) //node with the least hop counts to k(node+1);
+                    o = w;
+            parent[o] = k;   //parent[w]=k; k->w; w is the node with the least hop counts to k
+            //printf("o=%d\n",o);
+            /*
+             * update distance counts for the nodes that are
+             * adjacent to o
+             */
+            if (o == 0)  //all nodes are inreachable!!
+                continue;
+            for (w = 1; w < n; w++) {
+                if (parent[w] != k &&  //no k to k
+                    hopcnt[o] + ADJ(o, w) < hopcnt[w]) {
+                    ROUTE(k, w) = ROUTE(k, o);
+                    ROUTE_ENTRY(k, w) = ROUTE_ENTRY(k, o);
+                    hopcnt[w] = hopcnt[o] + ADJ(o, w);
+                }
+            }
+        }
+    }
+    
+    if(dst==70 || dst==68){//route #1
+        int find=0;
+        for (int i=0; i<route1.size(); ++i) {
+            if (route1[i]==ROUTE(k,dst+1)-1) {
+                find=1;
+                break;
+            }
+        }
+        if(find==0) route1.push_back(ROUTE(k,dst+1)-1);
+    }
+    if(dst==71 || dst==69){//route #2
+        int find=0;
+        for (int i=0; i<route2.size(); ++i) {
+            if (route2[i]==ROUTE(k,dst+1)-1) {
+                find=1;
+                break;
+            }
+        }
+        if(find==0) route2.push_back(ROUTE(k,dst+1)-1);
+    }
 	/*
 	* The route to yourself is yourself.
 	*/
